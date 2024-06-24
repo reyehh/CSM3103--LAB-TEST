@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <!-- Custom styles for this template -->
+    <link href="css/navbar-fixed-top.css" rel="stylesheet">
+
+    <title>Employee List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #8F93A4;
+        }
+        .employee {
+            cursor: pointer;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        .employee:hover {
+            background-color: #f0f0f0;
+        }
+        .employee a {
+            color: blue;
+            text-decoration: none;
+        }
+        .employee a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div id="employeeList"></div>
+
+     <!-- Fixed navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">CSM3103</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Profile</a></li>
+                            <li><a href="#">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="employeeDetails" class="employee-details"></div>
+    </div>
+
+    <nav class="navbar navbar-default navbar-fixed-bottom">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <p>Front End Programming &copy;2022</p>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('https://kerbau.odaje.biz/getstaff.php')
+                .then(response => response.json())
+                .then(data => {
+                    const status = JSON.parse(data[0]).status;
+                    if (status === 1) {
+                        const employeeList = document.getElementById('employeeList');
+                        data.slice(1).forEach(employeeData => {
+                            const employee = JSON.parse(employeeData);
+                            const employeeDiv = document.createElement('div');
+                            employeeDiv.classList.add('employee');
+                            employeeDiv.id = employee.employeeNumber;
+                            employeeDiv.innerHTML = `<a href="secondpage.html?employeeNumber=${employee.employeeNumber}">${employee.email}</a>`;
+                            employeeList.appendChild(employeeDiv);
+                        });
+                    } else {
+                        console.error('Failed to retrieve employee data');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching the employee data:', error);
+                });
+        });
+    </script>
+</body>
+</html>
